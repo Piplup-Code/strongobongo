@@ -1,0 +1,35 @@
+-- Exercise seed data
+-- 30 common exercises for MVP
+
+INSERT INTO exercises (name, muscle_group, equipment) VALUES
+  ('Bench Press', 'chest', 'barbell'),
+  ('Squat', 'legs', 'barbell'),
+  ('Deadlift', 'back', 'barbell'),
+  ('Overhead Press', 'shoulders', 'barbell'),
+  ('Barbell Row', 'back', 'barbell'),
+  ('Incline Bench Press', 'chest', 'barbell'),
+  ('Romanian Deadlift', 'legs', 'barbell'),
+  ('Front Squat', 'legs', 'barbell'),
+  ('Dumbbell Press', 'chest', 'dumbbell'),
+  ('Dumbbell Row', 'back', 'dumbbell'),
+  ('Dumbbell Shoulder Press', 'shoulders', 'dumbbell'),
+  ('Dumbbell Curl', 'arms', 'dumbbell'),
+  ('Dumbbell Tricep Extension', 'arms', 'dumbbell'),
+  ('Dumbbell Lunge', 'legs', 'dumbbell'),
+  ('Dumbbell Lateral Raise', 'shoulders', 'dumbbell'),
+  ('Pull-up', 'back', 'bodyweight'),
+  ('Push-up', 'chest', 'bodyweight'),
+  ('Dip', 'arms', 'bodyweight'),
+  ('Chin-up', 'back', 'bodyweight'),
+  ('Plank', 'core', 'bodyweight'),
+  ('Leg Press', 'legs', 'machine'),
+  ('Lat Pulldown', 'back', 'machine'),
+  ('Cable Fly', 'chest', 'cable'),
+  ('Cable Row', 'back', 'cable'),
+  ('Cable Tricep Pushdown', 'arms', 'cable'),
+  ('Cable Bicep Curl', 'arms', 'cable'),
+  ('Leg Curl', 'legs', 'machine'),
+  ('Leg Extension', 'legs', 'machine'),
+  ('Calf Raise', 'legs', 'machine'),
+  ('Chest Fly', 'chest', 'machine')
+ON CONFLICT DO NOTHING;
