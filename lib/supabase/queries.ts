@@ -347,3 +347,100 @@ export async function completeWorkout(
     throw error
   }
 }
+
+// ==================== WORKOUT HISTORY FUNCTIONS ====================
+
+export interface WorkoutHistorySet {
+  id: string
+  reps: number
+  weight_kg: number | null
+  completed_at: string
+  exercise: Exercise
+}
+
+export interface WorkoutHistoryItem {
+  id: string
+  started_at: string
+  ended_at: string
+  total_duration_seconds: number | null
+  routine: Routine
+  sets: WorkoutHistorySet[]
+}
+
+/**
+ * Get completed workout history for a user session
+ */
+export async function getWorkoutHistory(sessionId: string): Promise<WorkoutHistoryItem[]> {
+  // Get completed workout sessions with routine info
+  const { data: sessions, error: sessionsError } = await supabase
+    .from('workout_sessions')
+    .select(`
+      id,
+      started_at,
+      ended_at,
+      total_duration_seconds,
+      routine:routines(*)
+    `)
+    .eq('session_id', sessionId)
+    .not('ended_at', 'is', null)
+    .order('ended_at', { ascending: false })
+
+  if (sessionsError) {
+    console.error('Error fetching workout history:', sessionsError)
+    throw sessionsError
+  }
+
+  if (!sessions || sessions.length === 0) {
+    return []
+  }
+
+  // Get all sets for these sessions with exercise info
+  const sessionIds = sessions.map(s => s.id)
+  const { data: allSets, error: setsError } = await supabase
+    .from('session_sets')
+    .select(`
+      id,
+      session_id,
+      reps,
+      weight_kg,
+      completed_at,
+      exercise:exercises(*)
+    `)
+    .in('session_id', sessionIds)
+    .order('completed_at', { ascending: true })
+
+  if (setsError) {
+    console.error('Error fetching session sets:', setsError)
+    throw setsError
+  }
+
+  // Group sets by session
+  const setsBySession = new Map<string, WorkoutHistorySet[]>()
+  for (const set of allSets || []) {
+    const sessionSets = setsBySession.get(set.session_id) || []
+    // Supabase returns nested relations as arrays, access first element
+    const exercise = Array.isArray(set.exercise) ? set.exercise[0] : set.exercise
+    sessionSets.push({
+      id: set.id,
+      reps: set.reps,
+      weight_kg: set.weight_kg,
+      completed_at: set.completed_at,
+      exercise: exercise as Exercise
+    })
+    setsBySession.set(set.session_id, sessionSets)
+  }
+
+  // Combine into workout history items
+  return sessions.map(session => {
+    // Supabase returns nested relations as arrays, access first element
+    const routine = Array.isArray(session.routine) ? session.routine[0] : session.routine
+    return {
+      id: session.id,
+      started_at: session.started_at,
+      ended_at: session.ended_at!,
+      total_duration_seconds: session.total_duration_seconds,
+      routine: routine as Routine,
+      sets: setsBySession.get(session.id) || []
+    }
+  })
+}

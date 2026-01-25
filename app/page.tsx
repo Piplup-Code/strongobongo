@@ -59,9 +59,14 @@ export default function Home() {
             Create and manage your workout routines
           </p>
         </div>
-        <Button asChild>
-          <Link href="/routines/new">New Routine</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button asChild variant="outline">
+            <Link href="/history">History</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/routines/new">New Routine</Link>
+          </Button>
+        </div>
       </div>
 
       {loading ? (
