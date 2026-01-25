@@ -26,6 +26,9 @@ export function ExerciseSet({
   onSetLogged,
   isResting = false
 }: ExerciseSetProps) {
+  // Get the last completed set to pre-fill values
+  const lastSet = completedSets.length > 0 ? completedSets[completedSets.length - 1] : null
+
   const [reps, setReps] = useState('')
   const [weight, setWeight] = useState('')
   const [isLogging, setIsLogging] = useState(false)
@@ -61,9 +64,9 @@ export function ExerciseSet({
     setIsLogging(true)
     try {
       await onSetLogged(repsNum, weightNum)
-      // Clear inputs after successful log
-      setReps('')
-      setWeight('')
+      // Keep the values for quick repeat - user can just tap "Log Set" again
+      setReps(String(repsNum))
+      setWeight(weightNum ? String(weightNum) : '')
       setError(null)
     } catch (err) {
       console.error('Error logging set:', err)
@@ -117,7 +120,7 @@ export function ExerciseSet({
                 <Input
                   type="number"
                   min="1"
-                  placeholder="10"
+                  placeholder={lastSet ? String(lastSet.reps) : '10'}
                   value={reps}
                   onChange={(e) => setReps(e.target.value)}
                   disabled={isResting || isLogging}
@@ -130,7 +133,7 @@ export function ExerciseSet({
                   type="number"
                   min="0"
                   step="0.5"
-                  placeholder="50"
+                  placeholder={lastSet?.weight_kg ? String(lastSet.weight_kg) : '0'}
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
                   disabled={isResting || isLogging}

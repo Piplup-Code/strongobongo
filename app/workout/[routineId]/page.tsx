@@ -239,6 +239,29 @@ export default function WorkoutPage() {
             Exit
           </Button>
         </div>
+        {/* Progress indicator */}
+        {(() => {
+          const completedExercises = routine.exercises.filter((e) => {
+            const sets = completedSets.filter((s) => s.exercise_id === e.exercise_id)
+            return sets.length >= e.target_sets
+          }).length
+          const totalExercises = routine.exercises.length
+          const progress = totalExercises > 0 ? (completedExercises / totalExercises) * 100 : 0
+          return (
+            <div className="mt-3">
+              <div className="flex justify-between text-sm text-muted-foreground mb-1">
+                <span>{completedExercises}/{totalExercises} exercises</span>
+                <span>{Math.round(progress)}%</span>
+              </div>
+              <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          )
+        })()}
       </div>
 
       {/* Exercises */}
