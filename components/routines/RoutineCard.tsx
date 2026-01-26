@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Card, CardHeader, CardTitle, CardDescription, CardFooter, CardContent } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -10,14 +10,17 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger
+  DialogTitle
 } from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem
+} from '@/components/ui/dropdown-menu'
 import { Database } from '@/types/database'
 import { deleteRoutine } from '@/lib/supabase/queries'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/lib/utils/toast'
-import { formatDate } from '@/lib/utils/date'
 
 type Routine = Database['public']['Tables']['routines']['Row']
 
@@ -51,32 +54,33 @@ export function RoutineCard({ routine, onDelete }: RoutineCardProps) {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{routine.name}</CardTitle>
-        <CardDescription>Created {formatDate(routine.created_at)}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <Button asChild className="flex-1">
-            <Link href={`/workout/${routine.id}`}>Start Workout</Link>
-          </Button>
-          <Button asChild variant="outline" className="flex-1">
-            <Link href={`/routines/${routine.id}/edit`}>Edit</Link>
-          </Button>
-        </div>
-      </CardContent>
-      <CardFooter>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="destructive" size="sm" className="w-full">
+    <Card className="relative group hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,0.3)] transition-all duration-200">
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-4">
+        <CardTitle className="text-3xl md:text-4xl leading-tight">{routine.name}</CardTitle>
+        <DropdownMenu>
+          <DropdownMenuContent>
+            <DropdownMenuItem
+              onClick={() => {
+                router.push(`/routines/${routine.id}/edit`)
+              }}
+            >
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => {
+                setIsDialogOpen(true)
+              }}
+            >
               Delete
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="border-2 border-foreground/20">
             <DialogHeader>
-              <DialogTitle>Delete Routine</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="font-display text-2xl uppercase">Delete Routine</DialogTitle>
+              <DialogDescription className="text-base font-body">
                 Are you sure you want to delete &quot;{routine.name}&quot;? This action cannot be undone.
               </DialogDescription>
             </DialogHeader>
@@ -98,7 +102,12 @@ export function RoutineCard({ routine, onDelete }: RoutineCardProps) {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </CardFooter>
+      </CardHeader>
+      <CardContent>
+        <Button asChild size="lg" className="w-full">
+          <Link href={`/workout/${routine.id}`}>Start Workout</Link>
+        </Button>
+      </CardContent>
     </Card>
   )
 }

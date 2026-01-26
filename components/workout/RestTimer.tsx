@@ -95,39 +95,41 @@ export function RestTimer({
   }
 
   return (
-    <Card className="bg-primary/5 border-primary/20">
-      <CardContent className="pt-4">
-        <div className="flex items-center justify-between gap-4">
+    <Card className="bg-primary/10 border-2 border-primary/50 shadow-[8px_8px_0px_0px_rgba(var(--primary),0.2)]">
+      <CardContent className="pt-6">
+        <div className="flex items-center justify-between gap-6">
           <div className="flex-1">
-            <div className="text-sm text-muted-foreground mb-1">Rest Timer</div>
-            <div className="text-2xl font-bold">{formatTime(timeRemaining)}</div>
-            <div className="mt-2 h-2 bg-muted rounded-full overflow-hidden">
+            <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Rest Timer</div>
+            <div className="font-mono text-4xl md:text-5xl font-bold mb-4">{formatTime(timeRemaining)}</div>
+            <div className="h-4 bg-muted border-2 border-foreground/20 relative overflow-hidden">
               <div
-                className="h-full bg-primary transition-all duration-1000"
+                className="h-full bg-primary transition-all duration-1000 border-r-2 border-foreground/20"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-3">
             <Button
               variant="outline"
-              size="icon"
+              size="lg"
               onClick={handlePauseResume}
               aria-label={isPaused ? 'Resume' : 'Pause'}
+              className="w-14 h-14"
             >
               {isPaused ? (
-                <PlayIcon className="h-4 w-4" />
+                <PlayIcon className="h-5 w-5" />
               ) : (
-                <PauseIcon className="h-4 w-4" />
+                <PauseIcon className="h-5 w-5" />
               )}
             </Button>
             <Button
               variant="outline"
-              size="icon"
+              size="lg"
               onClick={handleSkip}
               aria-label="Skip rest"
+              className="w-14 h-14"
             >
-              <SkipForwardIcon className="h-4 w-4" />
+              <SkipForwardIcon className="h-5 w-5" />
             </Button>
           </div>
         </div>

@@ -111,8 +111,8 @@ export default function NewRoutinePage() {
   return (
     <div className="min-h-screen bg-background pb-32">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="container mx-auto px-4 py-3">
+      <div className="sticky top-0 z-10 bg-background/98 backdrop-blur border-b-2 border-foreground/20">
+        <div className="container mx-auto px-6 py-4 max-w-5xl">
           <div className="flex items-center justify-between">
             <Link
               href="/"
@@ -121,41 +121,45 @@ export default function NewRoutinePage() {
               <ArrowLeft className="h-5 w-5" />
               <span className="sr-only">Back</span>
             </Link>
-            <h1 className="text-lg font-semibold">New Routine</h1>
+            <h1 className="text-3xl font-display uppercase tracking-wider">New Routine</h1>
             <Button
-              size="sm"
+              size="lg"
               onClick={handleSave}
               disabled={isSaving || selectedExercises.length === 0}
             >
-              <Save className="h-4 w-4 mr-1" />
+              <Save className="h-4 w-4 mr-2" />
               {isSaving ? 'Saving...' : 'Save'}
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-4 space-y-6">
+      <div className="container mx-auto px-6 py-8 max-w-5xl space-y-8">
         {/* Routine Name */}
-        <div>
+        <div className="animate-reveal">
+          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">
+            Routine Name
+          </label>
           <Input
             type="text"
-            placeholder="Routine name (e.g., Push Day)"
+            placeholder="Push Day"
             value={routineName}
             onChange={(e) => setRoutineName(e.target.value)}
-            className="text-lg font-medium h-12"
+            className="text-2xl font-display uppercase"
           />
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-3 text-sm text-destructive">
-            {error}
+          <div className="border-2 border-destructive bg-destructive/10 p-4 text-destructive animate-reveal">
+            <div className="font-display text-lg uppercase mb-1">Error</div>
+            <div className="font-body">{error}</div>
           </div>
         )}
 
         {/* Exercise Selection */}
-        <div>
-          <h2 className="text-sm font-medium text-muted-foreground mb-3">
+        <div className="animate-reveal-delay-1">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-4">
             Tap to add exercises
           </h2>
           <ExerciseGrid selectedIds={selectedIds} onSelect={handleAddExercise} />
@@ -163,8 +167,8 @@ export default function NewRoutinePage() {
 
         {/* Selected Exercises */}
         {selectedExercises.length > 0 && (
-          <div>
-            <h2 className="text-sm font-medium text-muted-foreground mb-3">
+          <div className="animate-reveal-delay-2">
+            <h2 className="text-2xl font-display uppercase tracking-wider mb-4">
               Your routine ({selectedExercises.length} exercise
               {selectedExercises.length !== 1 ? 's' : ''})
             </h2>

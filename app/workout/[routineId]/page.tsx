@@ -194,11 +194,11 @@ export default function WorkoutPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="space-y-4">
-          <div className="h-16 bg-muted animate-pulse rounded" />
+      <div className="min-h-screen container mx-auto px-6 py-12 max-w-5xl">
+        <div className="space-y-6">
+          <div className="h-24 bg-muted animate-pulse border-2 border-foreground/20" />
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-48 bg-muted animate-pulse rounded" />
+            <div key={i} className="h-64 bg-muted animate-pulse border-2 border-foreground/20" style={{ animationDelay: `${i * 0.1}s` }} />
           ))}
         </div>
       </div>
@@ -207,116 +207,119 @@ export default function WorkoutPage() {
 
   if (error || !routine) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-4 text-destructive mb-4">
-          {error || 'Routine not found'}
+      <div className="min-h-screen container mx-auto px-6 py-12 max-w-5xl">
+        <div className="border-2 border-destructive bg-destructive/10 p-6 text-destructive mb-6 animate-reveal">
+          <div className="font-display text-xl uppercase mb-2">Error</div>
+          <div>{error || 'Routine not found'}</div>
         </div>
-        <Button asChild>
+        <Button asChild size="lg">
           <Link href="/">Back to Routines</Link>
         </Button>
       </div>
     )
   }
 
+  const completedExercises = routine.exercises.filter((e) => {
+    const sets = completedSets.filter((s) => s.exercise_id === e.exercise_id)
+    return sets.length >= e.target_sets
+  }).length
+  const totalExercises = routine.exercises.length
+  const progress = totalExercises > 0 ? (completedExercises / totalExercises) * 100 : 0
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div className="min-h-screen bg-background">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b pb-4 mb-6">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold">{routine.name}</h1>
-            <p className="text-sm text-muted-foreground">Elapsed: {formatTime(elapsedSeconds)}</p>
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              if (confirm('Exit workout? Your progress will be saved, but the workout won\'t be marked as complete.')) {
-                router.push('/')
-              }
-            }}
-          >
-            Exit
-          </Button>
-        </div>
-        {/* Progress indicator */}
-        {(() => {
-          const completedExercises = routine.exercises.filter((e) => {
-            const sets = completedSets.filter((s) => s.exercise_id === e.exercise_id)
-            return sets.length >= e.target_sets
-          }).length
-          const totalExercises = routine.exercises.length
-          const progress = totalExercises > 0 ? (completedExercises / totalExercises) * 100 : 0
-          return (
-            <div className="mt-3">
-              <div className="flex justify-between text-sm text-muted-foreground mb-1">
-                <span>{completedExercises}/{totalExercises} exercises</span>
-                <span>{Math.round(progress)}%</span>
-              </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-primary transition-all duration-300"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
+      <div className="sticky top-0 z-10 bg-background/98 backdrop-blur border-b-2 border-foreground/20">
+        <div className="container mx-auto px-6 py-6 max-w-5xl">
+          <div className="flex items-center justify-between gap-6 mb-4">
+            <div>
+              <h1 className="text-4xl md:text-5xl font-display mb-2 tracking-tight">{routine.name}</h1>
+              <div className="font-mono text-lg text-muted-foreground font-body">Elapsed: {formatTime(elapsedSeconds)}</div>
             </div>
-          )
-        })()}
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => {
+                if (confirm('Exit workout? Your progress will be saved, but the workout won\'t be marked as complete.')) {
+                  router.push('/')
+                }
+              }}
+            >
+              Exit
+            </Button>
+          </div>
+          {/* Progress indicator */}
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm font-semibold uppercase tracking-wider">
+              <span>{completedExercises}/{totalExercises} exercises</span>
+              <span>{Math.round(progress)}%</span>
+            </div>
+            <div className="h-4 bg-muted border-2 border-foreground/20 relative overflow-hidden">
+              <div
+                className="h-full bg-primary transition-all duration-500 border-r-2 border-foreground/20"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Exercises */}
-      <div className="space-y-6">
-        {routine.exercises.map((routineExercise, index) => {
-          const exerciseSets = getCompletedSetsForExercise(routineExercise.exercise_id)
-          const isComplete = exerciseSets.length >= routineExercise.target_sets
-          
-          // Current exercise is the first incomplete one
-          const isCurrentExercise = !isComplete && routine.exercises
-            .slice(0, index)
-            .every((e) => {
-              const sets = getCompletedSetsForExercise(e.exercise_id)
-              return sets.length >= e.target_sets
-            })
+      <div className="container mx-auto px-6 py-8 max-w-5xl">
+        <div className="space-y-8">
+          {routine.exercises.map((routineExercise, index) => {
+            const exerciseSets = getCompletedSetsForExercise(routineExercise.exercise_id)
+            const isComplete = exerciseSets.length >= routineExercise.target_sets
+            
+            // Current exercise is the first incomplete one
+            const isCurrentExercise = !isComplete && routine.exercises
+              .slice(0, index)
+              .every((e) => {
+                const sets = getCompletedSetsForExercise(e.exercise_id)
+                return sets.length >= e.target_sets
+              })
 
-          const isResting = activeRestTimer?.exerciseId === routineExercise.exercise_id
+            const isResting = activeRestTimer?.exerciseId === routineExercise.exercise_id
 
-          return (
-            <div key={routineExercise.id} className="space-y-4">
-              <ExerciseSet
-                exercise={routineExercise.exercise}
-                targetSets={routineExercise.target_sets}
-                targetReps={routineExercise.target_reps}
-                targetWeight={routineExercise.target_weight_kg}
-                completedSets={exerciseSets}
-                onSetLogged={async (reps, weightKg) => {
-                  await handleSetLogged(routineExercise.exercise_id, reps, weightKg)
-                }}
-                isResting={isResting}
-              />
-
-              {/* Rest Timer - only show for current exercise */}
-              {isResting && isCurrentExercise && (
-                <RestTimer
-                  durationSeconds={activeRestTimer.durationSeconds}
-                  onComplete={handleRestComplete}
-                  onSkip={handleRestSkip}
-                  autoStart={true}
+            return (
+              <div key={routineExercise.id} className="space-y-4 animate-reveal" style={{ animationDelay: `${index * 0.1}s` }}>
+                <ExerciseSet
+                  exercise={routineExercise.exercise}
+                  targetSets={routineExercise.target_sets}
+                  targetReps={routineExercise.target_reps}
+                  targetWeight={routineExercise.target_weight_kg}
+                  completedSets={exerciseSets}
+                  onSetLogged={async (reps, weightKg) => {
+                    await handleSetLogged(routineExercise.exercise_id, reps, weightKg)
+                  }}
+                  isResting={isResting}
+                  isCurrent={isCurrentExercise}
                 />
-              )}
-            </div>
-          )
-        })}
-      </div>
 
-      {/* Complete Workout Button */}
-      <div className="mt-8 pt-6 border-t">
-        <Button
-          onClick={() => setShowCompleteDialog(true)}
-          size="lg"
-          className="w-full h-12 text-base"
-        >
-          Complete Workout
-        </Button>
+                {/* Rest Timer - only show for current exercise */}
+                {isResting && isCurrentExercise && (
+                  <RestTimer
+                    durationSeconds={activeRestTimer.durationSeconds}
+                    onComplete={handleRestComplete}
+                    onSkip={handleRestSkip}
+                    autoStart={true}
+                  />
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Complete Workout Button */}
+        <div className="mt-12 pt-8 border-t-2 border-foreground/20">
+          <Button
+            onClick={() => setShowCompleteDialog(true)}
+            size="lg"
+            className="w-full"
+          >
+            Complete Workout
+          </Button>
+        </div>
       </div>
 
       {/* Complete Workout Dialog */}

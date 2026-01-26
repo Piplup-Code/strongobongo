@@ -35,47 +35,60 @@ export default function HistoryPage() {
   }, [])
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Workout History</h1>
-        <p className="text-muted-foreground mt-1">
-          Track your progress over time
-        </p>
-      </div>
+    <div className="min-h-screen">
+      <div className="container mx-auto px-6 py-12 max-w-5xl">
+        <div className="mb-12 animate-reveal">
+          <h1 className="text-5xl md:text-6xl font-display mb-4 tracking-tight leading-none">
+            Workout History
+          </h1>
+          <p className="text-lg text-muted-foreground font-body">
+            Track your progress over time
+          </p>
+        </div>
 
-      {loading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-32 bg-muted animate-pulse rounded-lg"
-            />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-4 text-destructive">
-          {error}
-        </div>
-      ) : workouts.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="max-w-md mx-auto">
-            <div className="text-6xl mb-4">📊</div>
-            <h2 className="text-2xl font-semibold mb-2">No workouts yet</h2>
-            <p className="text-muted-foreground mb-6">
-              Complete your first workout to start tracking your progress!
-            </p>
-            <Button asChild size="lg">
-              <Link href="/">Go to Routines</Link>
-            </Button>
+        {loading ? (
+          <div className="space-y-6">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-40 bg-muted animate-pulse border-2 border-foreground/20"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              />
+            ))}
           </div>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {workouts.map((workout) => (
-            <WorkoutHistoryCard key={workout.id} workout={workout} />
-          ))}
-        </div>
-      )}
+        ) : error ? (
+          <div className="border-2 border-destructive bg-destructive/10 p-6 text-destructive animate-reveal">
+            <div className="font-display text-xl uppercase mb-2">Error</div>
+            <div>{error}</div>
+          </div>
+        ) : workouts.length === 0 ? (
+          <div className="text-center py-24 px-6 animate-reveal">
+            <div className="max-w-lg mx-auto">
+              <h2 className="text-5xl md:text-6xl font-display mb-6 tracking-tight leading-none">
+                No workouts yet
+              </h2>
+              <p className="text-lg text-muted-foreground mb-12 font-body max-w-md mx-auto">
+                Complete your first workout to start tracking your progress!
+              </p>
+              <Button asChild size="lg" className="animate-reveal-delay-2">
+                <Link href="/">Go to Routines</Link>
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {workouts.map((workout, index) => (
+              <div
+                key={workout.id}
+                className="animate-reveal"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <WorkoutHistoryCard workout={workout} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

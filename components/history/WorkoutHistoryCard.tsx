@@ -46,54 +46,59 @@ export function WorkoutHistoryCard({ workout }: WorkoutHistoryCardProps) {
 
   return (
     <Card>
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-lg">{workout.routine.name}</CardTitle>
-            <CardDescription>{formatRelativeTime(workout.ended_at)}</CardDescription>
+      <CardHeader className="pb-4">
+        <div className="flex justify-between items-start gap-4">
+          <div className="flex-1">
+            <CardTitle className="text-3xl md:text-4xl mb-2">{workout.routine.name}</CardTitle>
+            <div className="text-sm text-muted-foreground font-body">{formatRelativeTime(workout.ended_at)}</div>
           </div>
-          <div className="text-right text-sm text-muted-foreground">
+          <div className="text-right text-sm text-muted-foreground font-mono">
             <div>{formatDate(workout.ended_at)}</div>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-4 text-sm text-muted-foreground mb-3">
-          <div className="flex items-center gap-1">
+        <div className="flex gap-6 text-sm mb-4">
+          <div className="flex items-center gap-2 border-2 border-foreground/20 px-3 py-2 bg-secondary/30">
             <Clock className="h-4 w-4" />
-            {formatDuration(workout.total_duration_seconds)}
+            <span className="font-semibold uppercase tracking-wider">{formatDuration(workout.total_duration_seconds)}</span>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2 border-2 border-foreground/20 px-3 py-2 bg-secondary/30">
             <Dumbbell className="h-4 w-4" />
-            {exerciseCount} exercise{exerciseCount !== 1 ? 's' : ''}, {totalSets} set{totalSets !== 1 ? 's' : ''}
+            <span className="font-semibold uppercase tracking-wider">
+              {exerciseCount} exercise{exerciseCount !== 1 ? 's' : ''}, {totalSets} set{totalSets !== 1 ? 's' : ''}
+            </span>
           </div>
         </div>
 
         <Button
-          variant="ghost"
-          size="sm"
+          variant="outline"
+          size="lg"
           className="w-full justify-between"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          {isExpanded ? 'Hide details' : 'Show details'}
-          {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          <span className="uppercase tracking-wider">{isExpanded ? 'Hide details' : 'Show details'}</span>
+          {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
         </Button>
 
         {isExpanded && (
-          <div className="mt-4 space-y-3">
+          <div className="mt-6 space-y-4 pt-4 border-t-2 border-foreground/20">
             {Array.from(setsByExercise.values()).map(({ exercise, sets }, idx) => (
-              <div key={idx} className="border rounded-lg p-3">
-                <div className="font-medium">{exercise.name}</div>
-                <div className="text-xs text-muted-foreground mb-2">{exercise.muscle_group}</div>
-                <div className="flex flex-wrap gap-2">
+              <div key={idx} className="border-2 border-foreground/20 p-4 bg-secondary/20">
+                <div className="font-display text-xl uppercase tracking-wider mb-2">{exercise.name}</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">{exercise.muscle_group}</div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {sets.map((set, setIdx) => (
                     <div
                       key={setIdx}
-                      className="bg-muted px-2 py-1 rounded text-sm"
+                      className="border-2 border-foreground/20 p-3 bg-card"
                     >
-                      {set.weight_kg !== null && set.weight_kg > 0
-                        ? `${set.weight_kg}kg × ${set.reps}`
-                        : `${set.reps} reps`}
+                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Set {setIdx + 1}</div>
+                      <div className="font-mono text-lg font-bold">
+                        {set.weight_kg !== null && set.weight_kg > 0
+                          ? `${set.weight_kg}kg × ${set.reps}`
+                          : `${set.reps} reps`}
+                      </div>
                     </div>
                   ))}
                 </div>

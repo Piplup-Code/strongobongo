@@ -51,56 +51,66 @@ export default function Home() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">My Routines</h1>
-          <p className="text-muted-foreground mt-1">
-            Create and manage your workout routines
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/routines/new">New Routine</Link>
-        </Button>
-      </div>
-
-      {loading ? (
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-32 bg-muted animate-pulse rounded-lg"
-            />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="rounded-lg bg-destructive/10 border border-destructive/20 p-4 text-destructive">
-          {error}
-        </div>
-      ) : routines.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="max-w-md mx-auto">
-            <div className="text-6xl mb-4">💪</div>
-            <h2 className="text-2xl font-semibold mb-2">No routines yet</h2>
-            <p className="text-muted-foreground mb-6">
-              Create your first workout routine to get started tracking your progress!
-            </p>
-            <Button asChild size="lg">
-              <Link href="/routines/new">Create Your First Routine</Link>
-            </Button>
+    <div className="min-h-screen">
+      <div className="container mx-auto px-6 py-12 max-w-5xl">
+        {loading ? (
+          <div className="space-y-6">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-40 bg-muted animate-pulse border-2 border-foreground/20"
+                style={{ animationDelay: `${i * 0.1}s` }}
+              />
+            ))}
           </div>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-1 lg:grid-cols-2">
-          {routines.map((routine) => (
-            <RoutineCard
-              key={routine.id}
-              routine={routine}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
-      )}
+        ) : error ? (
+          <div className="border-2 border-destructive bg-destructive/10 p-6 text-destructive animate-reveal">
+            <div className="font-display text-xl uppercase mb-2">Error</div>
+            <div>{error}</div>
+          </div>
+        ) : routines.length === 0 ? (
+          <div className="text-center py-24 px-6 animate-reveal">
+            <div className="max-w-lg mx-auto">
+              <h1 className="text-6xl md:text-7xl font-display mb-6 tracking-tight leading-none">
+                Ready to train?
+              </h1>
+              <p className="text-lg text-muted-foreground mb-12 font-body max-w-md mx-auto">
+                Create your first workout routine to get started tracking your progress
+              </p>
+              <Button asChild size="lg" className="animate-reveal-delay-2">
+                <Link href="/routines/new">Create Your First Routine</Link>
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="mb-12 animate-reveal">
+              <h1 className="text-5xl md:text-6xl font-display mb-4 tracking-tight leading-none">
+                What are you<br />training today?
+              </h1>
+            </div>
+            <div className="space-y-6 mb-12">
+              {routines.map((routine, index) => (
+                <div
+                  key={routine.id}
+                  className="animate-reveal"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <RoutineCard
+                    routine={routine}
+                    onDelete={handleDelete}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-center animate-reveal-delay-3">
+              <Button asChild variant="outline" size="lg">
+                <Link href="/routines/new">+ Create new routine</Link>
+              </Button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   )
 }
