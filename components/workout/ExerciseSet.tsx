@@ -14,6 +14,8 @@ type SessionSet = Database['public']['Tables']['session_sets']['Row']
 interface ExerciseSetProps {
   exercise: Exercise
   targetSets: number
+  targetReps: number
+  targetWeight: number | null
   completedSets: SessionSet[]
   onSetLogged: (reps: number, weightKg: number | null) => Promise<void>
   isResting?: boolean
@@ -22,12 +24,20 @@ interface ExerciseSetProps {
 export function ExerciseSet({
   exercise,
   targetSets,
+  targetReps,
+  targetWeight,
   completedSets,
   onSetLogged,
   isResting = false
 }: ExerciseSetProps) {
   // Get the last completed set to pre-fill values
   const lastSet = completedSets.length > 0 ? completedSets[completedSets.length - 1] : null
+
+  // Placeholder defaults: prioritize last set, then routine targets
+  const repsPlaceholder = lastSet ? String(lastSet.reps) : String(targetReps)
+  const weightPlaceholder = lastSet?.weight_kg != null
+    ? String(lastSet.weight_kg)
+    : (targetWeight != null ? String(targetWeight) : '')
 
   const [reps, setReps] = useState('')
   const [weight, setWeight] = useState('')
@@ -37,9 +47,13 @@ export function ExerciseSet({
   const handleLogSet = async () => {
     setError(null)
 
+    // Use entered value or fall back to placeholder
+    const repsValue = reps || repsPlaceholder
+    const weightValue = weight || weightPlaceholder
+
     // Validation
-    const repsNum = parseInt(reps)
-    if (!reps || isNaN(repsNum) || repsNum <= 0) {
+    const repsNum = parseInt(repsValue)
+    if (!repsValue || isNaN(repsNum) || repsNum <= 0) {
       setError('Reps must be a number greater than 0')
       return
     }
@@ -49,8 +63,8 @@ export function ExerciseSet({
       return
     }
 
-    const weightNum = weight ? parseFloat(weight) : null
-    if (weight) {
+    const weightNum = weightValue ? parseFloat(weightValue) : null
+    if (weightValue) {
       if (isNaN(weightNum!) || weightNum! < 0) {
         setError('Weight must be a number greater than or equal to 0')
         return
@@ -64,9 +78,9 @@ export function ExerciseSet({
     setIsLogging(true)
     try {
       await onSetLogged(repsNum, weightNum)
-      // Keep the values for quick repeat - user can just tap "Log Set" again
-      setReps(String(repsNum))
-      setWeight(weightNum ? String(weightNum) : '')
+      // Clear inputs - placeholders will update to show last logged values
+      setReps('')
+      setWeight('')
       setError(null)
     } catch (err) {
       console.error('Error logging set:', err)
@@ -120,7 +134,7 @@ export function ExerciseSet({
                 <Input
                   type="number"
                   min="1"
-                  placeholder={lastSet ? String(lastSet.reps) : '10'}
+                  placeholder={repsPlaceholder}
                   value={reps}
                   onChange={(e) => setReps(e.target.value)}
                   disabled={isResting || isLogging}
@@ -133,7 +147,7 @@ export function ExerciseSet({
                   type="number"
                   min="0"
                   step="0.5"
-                  placeholder={lastSet?.weight_kg ? String(lastSet.weight_kg) : '0'}
+                  placeholder={weightPlaceholder || '—'}
                   value={weight}
                   onChange={(e) => setWeight(e.target.value)}
                   disabled={isResting || isLogging}
@@ -148,7 +162,7 @@ export function ExerciseSet({
 
             <Button
               onClick={handleLogSet}
-              disabled={isResting || isLogging || !reps}
+              disabled={isResting || isLogging}
               className="w-full h-12 text-base"
             >
               {isLogging ? 'Logging...' : 'Log Set'}

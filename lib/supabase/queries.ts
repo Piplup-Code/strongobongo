@@ -423,9 +423,12 @@ export async function getWorkoutHistory(sessionId: string): Promise<WorkoutHisto
   // Group sets by session
   const setsBySession = new Map<string, WorkoutHistorySet[]>()
   for (const set of allSets || []) {
-    const sessionSets = setsBySession.get(set.session_id) || []
     // Supabase returns nested relations as arrays, access first element
     const exercise = Array.isArray(set.exercise) ? set.exercise[0] : set.exercise
+    // Skip sets with missing exercises
+    if (!exercise) continue
+
+    const sessionSets = setsBySession.get(set.session_id) || []
     sessionSets.push({
       id: set.id,
       reps: set.reps,
@@ -436,17 +439,21 @@ export async function getWorkoutHistory(sessionId: string): Promise<WorkoutHisto
     setsBySession.set(set.session_id, sessionSets)
   }
 
-  // Combine into workout history items
-  return sessions.map(session => {
-    // Supabase returns nested relations as arrays, access first element
-    const routine = Array.isArray(session.routine) ? session.routine[0] : session.routine
-    return {
-      id: session.id,
-      started_at: session.started_at,
-      ended_at: session.ended_at!,
-      total_duration_seconds: session.total_duration_seconds,
-      routine: routine as Routine,
-      sets: setsBySession.get(session.id) || []
-    }
-  })
+  // Combine into workout history items, filtering out sessions with missing routines
+  return sessions
+    .map(session => {
+      // Supabase returns nested relations as arrays, access first element
+      const routine = Array.isArray(session.routine) ? session.routine[0] : session.routine
+      if (!routine) return null
+
+      return {
+        id: session.id,
+        started_at: session.started_at,
+        ended_at: session.ended_at!,
+        total_duration_seconds: session.total_duration_seconds,
+        routine: routine as Routine,
+        sets: setsBySession.get(session.id) || []
+      }
+    })
+    .filter((item): item is WorkoutHistoryItem => item !== null)
 }

@@ -285,6 +285,8 @@ export default function WorkoutPage() {
               <ExerciseSet
                 exercise={routineExercise.exercise}
                 targetSets={routineExercise.target_sets}
+                targetReps={routineExercise.target_reps}
+                targetWeight={routineExercise.target_weight_kg}
                 completedSets={exerciseSets}
                 onSetLogged={async (reps, weightKg) => {
                   await handleSetLogged(routineExercise.exercise_id, reps, weightKg)
