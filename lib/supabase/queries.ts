@@ -13,6 +13,8 @@ export interface ExerciseWithConfig {
   exercise_id: string
   order_index: number
   target_sets: number
+  target_reps: number
+  target_weight_kg: number | null
   target_rest_seconds: number
 }
 
@@ -123,6 +125,8 @@ export async function createRoutine(
     exercise_id: ex.exercise_id,
     order_index: ex.order_index,
     target_sets: ex.target_sets,
+    target_reps: ex.target_reps,
+    target_weight_kg: ex.target_weight_kg,
     target_rest_seconds: ex.target_rest_seconds
   }))
 
@@ -191,6 +195,8 @@ export async function updateRoutine(
     exercise_id: ex.exercise_id,
     order_index: ex.order_index,
     target_sets: ex.target_sets,
+    target_reps: ex.target_reps,
+    target_weight_kg: ex.target_weight_kg,
     target_rest_seconds: ex.target_rest_seconds
   }))
 

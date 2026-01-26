@@ -64,6 +64,8 @@ export interface Database {
           exercise_id: string
           order_index: number
           target_sets: number
+          target_reps: number
+          target_weight_kg: number | null
           target_rest_seconds: number
           created_at: string
         }
@@ -73,6 +75,8 @@ export interface Database {
           exercise_id: string
           order_index: number
           target_sets?: number
+          target_reps?: number
+          target_weight_kg?: number | null
           target_rest_seconds?: number
           created_at?: string
         }
@@ -82,6 +86,8 @@ export interface Database {
           exercise_id?: string
           order_index?: number
           target_sets?: number
+          target_reps?: number
+          target_weight_kg?: number | null
           target_rest_seconds?: number
           created_at?: string
         }
