@@ -457,3 +457,50 @@ export async function getWorkoutHistory(sessionId: string): Promise<WorkoutHisto
     })
     .filter((item): item is WorkoutHistoryItem => item !== null)
 }
+
+// ==================== TEMPLATE FUNCTIONS ====================
+
+import { WorkoutTemplate } from '@/lib/data/workout-templates'
+
+/**
+ * Copy a workout template to create a new user routine
+ * Matches template exercise names to database exercises
+ */
+export async function copyTemplateToRoutine(
+  sessionId: string,
+  template: WorkoutTemplate
+): Promise<string> {
+  // Get all exercises to match by name
+  const allExercises = await getExercises()
+
+  // Match template exercises to database exercises
+  const matchedExercises: ExerciseWithConfig[] = []
+
+  for (let i = 0; i < template.exercises.length; i++) {
+    const templateEx = template.exercises[i]
+    // Find matching exercise by name (case-insensitive)
+    const dbExercise = allExercises.find(
+      ex => ex.name.toLowerCase() === templateEx.name.toLowerCase()
+    )
+
+    if (dbExercise) {
+      matchedExercises.push({
+        exercise_id: dbExercise.id,
+        order_index: i,
+        target_sets: templateEx.target_sets,
+        target_reps: templateEx.target_reps,
+        target_weight_kg: templateEx.target_weight_kg,
+        target_rest_seconds: templateEx.target_rest_seconds
+      })
+    }
+  }
+
+  // If no exercises matched, throw error
+  if (matchedExercises.length === 0) {
+    throw new Error('No matching exercises found for this template')
+  }
+
+  // Create routine with matched exercises
+  const routineName = `My ${template.name}`
+  return createRoutine(sessionId, routineName, matchedExercises)
+}
