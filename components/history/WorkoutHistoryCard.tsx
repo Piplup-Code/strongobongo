@@ -1,11 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { ChevronDown, ChevronUp, Clock, Dumbbell } from 'lucide-react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { WorkoutHistoryItem } from '@/lib/supabase/queries'
-import { formatDate, formatRelativeTime } from '@/lib/utils/date'
+import { formatRelativeTime } from '@/lib/utils/date'
+import { calculateTotalVolume, formatVolume } from '@/lib/utils/workout'
 
 interface WorkoutHistoryCardProps {
   workout: WorkoutHistoryItem
@@ -14,13 +13,12 @@ interface WorkoutHistoryCardProps {
 function formatDuration(seconds: number | null): string {
   if (!seconds) return '--'
   const mins = Math.floor(seconds / 60)
-  const secs = seconds % 60
   if (mins >= 60) {
     const hrs = Math.floor(mins / 60)
     const remainingMins = mins % 60
     return `${hrs}h ${remainingMins}m`
   }
-  return `${mins}m ${secs}s`
+  return `${mins}m`
 }
 
 export function WorkoutHistoryCard({ workout }: WorkoutHistoryCardProps) {
@@ -43,70 +41,99 @@ export function WorkoutHistoryCard({ workout }: WorkoutHistoryCardProps) {
 
   const exerciseCount = setsByExercise.size
   const totalSets = workout.sets.length
+  const totalVolume = calculateTotalVolume(workout.sets)
 
   return (
-    <Card>
-      <CardHeader className="pb-4">
-        <div className="flex justify-between items-start gap-4">
-          <div className="flex-1">
-            <CardTitle className="text-3xl md:text-4xl mb-2">{workout.routine.name}</CardTitle>
-            <div className="text-sm text-muted-foreground font-body">{formatRelativeTime(workout.ended_at)}</div>
+    <div className="group relative overflow-hidden bg-card border-2 border-foreground/20 hover:border-primary/50 transition-all duration-200">
+      {/* Yellow accent bar on left */}
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/60 group-hover:bg-primary transition-all duration-200" />
+
+      {/* Diagonal cut decoration */}
+      <div className="absolute right-0 top-0 w-16 h-full overflow-hidden pointer-events-none">
+        <div className="absolute -right-8 top-0 w-16 h-full bg-foreground/5 transform skew-x-[-12deg] group-hover:bg-primary/10 transition-colors duration-200" />
+      </div>
+
+      {/* Main content - clickable header */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full text-left pl-5 pr-4 py-4"
+      >
+        <div className="flex items-center gap-4">
+          {/* Duration badge */}
+          <div className="text-3xl md:text-4xl font-display text-foreground/20 group-hover:text-primary/40 transition-colors duration-200 leading-none select-none min-w-[4rem]">
+            {formatDuration(workout.total_duration_seconds)}
           </div>
-          <div className="text-right text-sm text-muted-foreground font-mono">
-            <div>{formatDate(workout.ended_at)}</div>
+
+          {/* Routine info */}
+          <div className="flex-1 min-w-0">
+            <div className="text-xl md:text-2xl font-display tracking-tight truncate group-hover:text-primary transition-colors duration-200">
+              {workout.routine.name}
+            </div>
+            <div className="text-sm text-muted-foreground mt-0.5">
+              {formatRelativeTime(workout.ended_at)}
+            </div>
           </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="flex gap-6 text-sm mb-4">
-          <div className="flex items-center gap-2 border-2 border-foreground/20 px-3 py-2 bg-secondary/30">
-            <Clock className="h-4 w-4" />
-            <span className="font-semibold uppercase tracking-wider">{formatDuration(workout.total_duration_seconds)}</span>
+
+          {/* Stats */}
+          <div className="hidden sm:flex items-center gap-3 text-sm text-muted-foreground">
+            <span className="font-mono">{exerciseCount} ex</span>
+            <span className="text-foreground/20">|</span>
+            <span className="font-mono">{totalSets} sets</span>
+            {totalVolume > 0 && (
+              <>
+                <span className="text-foreground/20">|</span>
+                <span className="font-mono text-primary">{formatVolume(totalVolume)}</span>
+              </>
+            )}
           </div>
-          <div className="flex items-center gap-2 border-2 border-foreground/20 px-3 py-2 bg-secondary/30">
-            <Dumbbell className="h-4 w-4" />
-            <span className="font-semibold uppercase tracking-wider">
-              {exerciseCount} exercise{exerciseCount !== 1 ? 's' : ''}, {totalSets} set{totalSets !== 1 ? 's' : ''}
-            </span>
+
+          {/* Expand/collapse icon */}
+          <div className="text-foreground/30 group-hover:text-primary transition-colors duration-200">
+            {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
           </div>
         </div>
 
-        <Button
-          variant="outline"
-          size="lg"
-          className="w-full justify-between"
-          onClick={() => setIsExpanded(!isExpanded)}
-        >
-          <span className="uppercase tracking-wider">{isExpanded ? 'Hide details' : 'Show details'}</span>
-          {isExpanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-        </Button>
+        {/* Mobile stats row */}
+        <div className="flex sm:hidden items-center gap-3 mt-2 text-xs text-muted-foreground pl-[4.5rem]">
+          <span className="font-mono">{exerciseCount} exercises</span>
+          <span className="text-foreground/20">|</span>
+          <span className="font-mono">{totalSets} sets</span>
+          {totalVolume > 0 && (
+            <>
+              <span className="text-foreground/20">|</span>
+              <span className="font-mono text-primary">{formatVolume(totalVolume)}</span>
+            </>
+          )}
+        </div>
+      </button>
 
-        {isExpanded && (
-          <div className="mt-6 space-y-4 pt-4 border-t-2 border-foreground/20">
+      {/* Expanded details */}
+      {isExpanded && (
+        <div className="px-5 pb-4 pt-2 border-t border-foreground/10">
+          <div className="space-y-3">
             {Array.from(setsByExercise.values()).map(({ exercise, sets }, idx) => (
-              <div key={idx} className="border-2 border-foreground/20 p-4 bg-secondary/20">
-                <div className="font-display text-xl uppercase tracking-wider mb-2">{exercise.name}</div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">{exercise.muscle_group}</div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div key={idx} className="border-l-2 border-primary/30 pl-4 py-2">
+                <div className="flex items-baseline justify-between mb-1">
+                  <span className="font-display text-lg uppercase tracking-wider">{exercise.name}</span>
+                  <span className="text-xs text-muted-foreground uppercase tracking-wider">{exercise.muscle_group}</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
                   {sets.map((set, setIdx) => (
                     <div
                       key={setIdx}
-                      className="border-2 border-foreground/20 p-3 bg-card"
+                      className="bg-foreground/5 border border-foreground/10 px-3 py-1.5 text-sm font-mono"
                     >
-                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Set {setIdx + 1}</div>
-                      <div className="font-mono text-lg font-bold">
-                        {set.weight_kg !== null && set.weight_kg > 0
-                          ? `${set.weight_kg}kg × ${set.reps}`
-                          : `${set.reps} reps`}
-                      </div>
+                      {set.weight_kg !== null && set.weight_kg > 0
+                        ? `${set.weight_kg}kg × ${set.reps}`
+                        : `${set.reps} reps`}
                     </div>
                   ))}
                 </div>
               </div>
             ))}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+    </div>
   )
 }
