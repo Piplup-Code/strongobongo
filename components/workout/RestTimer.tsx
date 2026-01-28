@@ -95,7 +95,7 @@ export function RestTimer({
   }
 
   return (
-    <Card className="bg-primary/10 border-2 border-primary/50 shadow-[8px_8px_0px_0px_rgba(var(--primary),0.2)]">
+    <Card className="bg-primary/10 border-2 border-primary/50 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)]">
       <CardContent className="pt-6">
         <div className="flex items-center justify-between gap-6">
           <div className="flex-1">

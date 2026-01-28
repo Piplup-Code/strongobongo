@@ -101,7 +101,7 @@ export function ExerciseSet({
   return (
     <Card className={cn(
       isComplete ? 'opacity-50' : '',
-      isCurrent && !isComplete ? 'border-primary/50 shadow-[8px_8px_0px_0px_rgba(var(--primary),0.3)]' : ''
+      isCurrent && !isComplete ? 'border-primary/50 shadow-[8px_8px_0px_0px_rgba(0,0,0,0.3)]' : ''
     )}>
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
