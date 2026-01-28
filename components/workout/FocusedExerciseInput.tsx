@@ -49,13 +49,20 @@ export function FocusedExerciseInput({
   const currentSetNumber = completedCount + 1
 
   const handleLogSet = async () => {
-    const repsValue = reps || repsPlaceholder
+    // Use entered value or fall back to placeholder, or default to target
+    const repsValue = reps || repsPlaceholder || String(targetReps)
     const weightValue = weight || weightPlaceholder
 
     const repsNum = parseInt(repsValue)
-    if (!repsValue || isNaN(repsNum) || repsNum <= 0) return
+    if (isNaN(repsNum) || repsNum <= 0) {
+      // If still no valid reps, use a sensible default
+      return
+    }
 
-    const weightNum = weightValue ? parseFloat(weightValue) : null
+    // Weight is optional - null for bodyweight exercises
+    const weightNum = weightValue && weightValue.trim() !== ''
+      ? parseFloat(weightValue)
+      : null
 
     setIsLogging(true)
     try {
