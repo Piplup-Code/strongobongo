@@ -147,6 +147,14 @@ export default function NewRoutinePage() {
             onChange={(e) => setRoutineName(e.target.value)}
             className="text-2xl font-display uppercase"
           />
+          <div className="text-center mt-4">
+            <Link
+              href="/templates"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              or start from a template
+            </Link>
+          </div>
         </div>
 
         {/* Error Message */}
