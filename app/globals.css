@@ -48,71 +48,73 @@
 
 :root {
   --radius: 0;
-  --background: oklch(0.05 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.08 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.08 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.7 0.25 180);
-  --primary-foreground: oklch(0.05 0 0);
-  --secondary: oklch(0.15 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.12 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.7 0.25 180);
-  --accent-foreground: oklch(0.05 0 0);
-  --destructive: oklch(0.65 0.25 15);
-  --border: oklch(0.2 0 0);
-  --input: oklch(0.12 0 0);
-  --ring: oklch(0.7 0.25 180);
-  --chart-1: oklch(0.7 0.25 180);
-  --chart-2: oklch(0.65 0.25 15);
-  --chart-3: oklch(0.6 0.2 60);
-  --chart-4: oklch(0.7 0.25 240);
-  --chart-5: oklch(0.65 0.25 300);
-  --sidebar: oklch(0.08 0 0);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.7 0.25 180);
-  --sidebar-primary-foreground: oklch(0.05 0 0);
-  --sidebar-accent: oklch(0.15 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.2 0 0);
-  --sidebar-ring: oklch(0.7 0.25 180);
+  /* Dark grey backgrounds */
+  --background: #282828;
+  --foreground: #ffffff;
+  --card: #3a3a3a;
+  --card-foreground: #ffffff;
+  --popover: #3a3a3a;
+  --popover-foreground: #ffffff;
+  /* Bright yellow accent - matching reference */
+  --primary: #ffff00;
+  --primary-foreground: #000000;
+  --secondary: #3a3a3a;
+  --secondary-foreground: #ffffff;
+  --muted: #2a2a2a;
+  --muted-foreground: #a0a0a0;
+  --accent: #ffff00;
+  --accent-foreground: #000000;
+  --destructive: #ff4444;
+  --border: #4a4a4a;
+  --input: #2a2a2a;
+  --ring: #ffff00;
+  --chart-1: #ffff00;
+  --chart-2: #ffaa00;
+  --chart-3: #ff6600;
+  --chart-4: #ff0066;
+  --chart-5: #aa00ff;
+  --sidebar: #3a3a3a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffff00;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #2a2a2a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #4a4a4a;
+  --sidebar-ring: #ffff00;
 }
 
 .dark {
-  --background: oklch(0.05 0 0);
-  --foreground: oklch(0.98 0 0);
-  --card: oklch(0.08 0 0);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.08 0 0);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.7 0.25 180);
-  --primary-foreground: oklch(0.05 0 0);
-  --secondary: oklch(0.15 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
-  --muted: oklch(0.12 0 0);
-  --muted-foreground: oklch(0.6 0 0);
-  --accent: oklch(0.7 0.25 180);
-  --accent-foreground: oklch(0.05 0 0);
-  --destructive: oklch(0.65 0.25 15);
-  --border: oklch(0.2 0 0);
-  --input: oklch(0.12 0 0);
-  --ring: oklch(0.7 0.25 180);
-  --chart-1: oklch(0.7 0.25 180);
-  --chart-2: oklch(0.65 0.25 15);
-  --chart-3: oklch(0.6 0.2 60);
-  --chart-4: oklch(0.7 0.25 240);
-  --chart-5: oklch(0.65 0.25 300);
-  --sidebar: oklch(0.08 0 0);
-  --sidebar-foreground: oklch(0.98 0 0);
-  --sidebar-primary: oklch(0.7 0.25 180);
-  --sidebar-primary-foreground: oklch(0.05 0 0);
-  --sidebar-accent: oklch(0.15 0 0);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.2 0 0);
-  --sidebar-ring: oklch(0.7 0.25 180);
+  --background: #282828;
+  --foreground: #ffffff;
+  --card: #3a3a3a;
+  --card-foreground: #ffffff;
+  --popover: #3a3a3a;
+  --popover-foreground: #ffffff;
+  --primary: #ffff00;
+  --primary-foreground: #000000;
+  --secondary: #3a3a3a;
+  --secondary-foreground: #ffffff;
+  --muted: #2a2a2a;
+  --muted-foreground: #a0a0a0;
+  --accent: #ffff00;
+  --accent-foreground: #000000;
+  --destructive: #ff4444;
+  --border: #4a4a4a;
+  --input: #2a2a2a;
+  --ring: #ffff00;
+  --chart-1: #ffff00;
+  --chart-2: #ffaa00;
+  --chart-3: #ff6600;
+  --chart-4: #ff0066;
+  --chart-5: #aa00ff;
+  --sidebar: #3a3a3a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #ffff00;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #2a2a2a;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #4a4a4a;
+  --sidebar-ring: #ffff00;
 }
 
 @layer base {
@@ -128,6 +130,7 @@
     font-weight: 400;
     letter-spacing: 0.02em;
     text-transform: uppercase;
+    text-shadow: none;
   }
 }
 
@@ -181,3 +184,19 @@ body::before {
 .animate-reveal-delay-2 { animation-delay: 0.2s; }
 .animate-reveal-delay-3 { animation-delay: 0.3s; }
 .animate-reveal-delay-4 { animation-delay: 0.4s; }
+
+/* Slide in animation for exercise switching */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.2s ease-out;
+}
